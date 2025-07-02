@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 
 const deals = await getCollection('deals');
+const uniqueCategories = [...new Set(deals.map((d) => d.data.category))];
 ---
 
 <html lang="en">
@@ -11,41 +12,100 @@ const deals = await getCollection('deals');
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
       body {
-        font-family: sans-serif;
+        font-family: system-ui, sans-serif;
         margin: 0;
-        padding: 1rem;
+        padding: 0;
         background: #f6f6f6;
       }
-      h1 {
-        text-align: center;
+
+      .site-header {
+        background-color: #ffffff;
+        padding: 1rem 0;
+        border-bottom: 1px solid #ddd;
         margin-bottom: 2rem;
       }
+
+      .site-header .container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+      }
+
+      .logo {
+        width: 50px;
+        height: 50px;
+        border-radius: 10px;
+      }
+
+      .site-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #333;
+      }
+
+      .filters {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .filter-btn {
+        padding: 0.4rem 1rem;
+        background: #e0e0e0;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: bold;
+      }
+
+      .filter-btn.active {
+        background: #0070f3;
+        color: white;
+      }
+
       .grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
         gap: 1.5rem;
+        padding: 0 1rem 2rem;
+        max-width: 1200px;
+        margin: auto;
       }
+
       .card {
         background: white;
         border-radius: 10px;
         padding: 1rem;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         display: flex;
         flex-direction: column;
+        transition: transform 0.2s ease;
       }
+
+      .card:hover {
+        transform: translateY(-3px);
+      }
+
       .card img {
         width: 100%;
         height: auto;
         border-radius: 8px;
         margin-bottom: 1rem;
+        object-fit: cover;
       }
+
       .card h2 {
         margin: 0 0 0.5rem;
         font-size: 1.2rem;
       }
+
       .card p {
         margin: 0.2rem 0;
       }
+
       .buy-button {
         margin-top: auto;
         padding: 0.5rem;
@@ -56,13 +116,35 @@ const deals = await getCollection('deals');
         text-decoration: none;
         font-weight: bold;
       }
+
+      .buy-button:hover {
+        background: #005ac1;
+      }
+
+      .hidden {
+        display: none !important;
+      }
     </style>
   </head>
+
   <body>
-    <h1>🔥 Wowza Deals</h1>
-    <div class="grid">
-      {deals.map((deal) => (
-        <div class="card">
+    <header class="site-header">
+      <div class="container">
+        <img src="/logo.png" alt="Wowza Deals" class="logo" />
+        <h1 class="site-title">Wowza Deals</h1>
+      </div>
+    </header>
+
+    <div class="filters">
+      <button class="filter-btn active" data-category="all">All</button>
+      {uniqueCategories.map((cat) => (
+        <button class="filter-btn" data-category={cat}>{cat}</button>
+      ))}
+    </div>
+
+    <div class="grid" id="dealsGrid">
+      {deals.map((deal, index) => (
+        <div class="card" data-category={deal.data.category}>
           <img src={deal.data.image} alt={deal.data.title} />
           <h2>{deal.data.title}</h2>
           <p><strong>£{deal.data.price}</strong></p>
@@ -71,5 +153,24 @@ const deals = await getCollection('deals');
         </div>
       ))}
     </div>
+
+    <script>
+      const buttons = document.querySelectorAll(".filter-btn");
+      const cards = document.querySelectorAll(".card");
+
+      buttons.forEach((btn) =>
+        btn.addEventListener("click", () => {
+          const selected = btn.dataset.category;
+
+          buttons.forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+
+          cards.forEach((card) => {
+            const match = selected === "all" || card.dataset.category === selected;
+            card.classList.toggle("hidden", !match);
+          });
+        })
+      );
+    </script>
   </body>
 </html>
