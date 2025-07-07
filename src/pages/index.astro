@@ -97,6 +97,17 @@ const allCategories = [
         margin: 0.3rem 0;
       }
 
+      .clear-filters-button {
+        margin-top: 1rem;
+        width: 100%;
+        padding: 0.4rem;
+        border-radius: 6px;
+        border: none;
+        background: #eee;
+        cursor: pointer;
+        font-size: 0.95rem;
+      }
+
       .grid {
         flex: 1;
         display: grid;
@@ -184,6 +195,10 @@ const allCategories = [
             </li>
           ))}
         </ul>
+
+        <button id="clearFilters" class="clear-filters-button">
+          Clear All Filters
+        </button>
       </aside>
 
       <div class="grid" id="dealsGrid">
@@ -197,7 +212,9 @@ const allCategories = [
             <h2>{deal.data.title}</h2>
             <p><strong>£{deal.data.price}</strong></p>
             <p>{deal.data.category}</p>
-            <a class="buy-button" href={deal.data.affiliateLink} target="_blank">Buy Now</a>
+            <a class="buy-button" href={deal.data.affiliateLink} target="_blank">
+              Buy Now
+            </a>
           </div>
         ))}
       </div>
@@ -223,6 +240,12 @@ const allCategories = [
 
       checkboxes.forEach((box) => box.addEventListener("change", filterCards));
       searchInput.addEventListener("input", filterCards);
+
+      document.getElementById("clearFilters").addEventListener("click", () => {
+        checkboxes.forEach((c) => (c.checked = false));
+        searchInput.value = "";
+        filterCards();
+      });
     </script>
   </body>
 </html>
