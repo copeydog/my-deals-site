@@ -14,7 +14,7 @@ const allCategories = [
   "TV & Film",
   "Travel",
   "Video Gaming"
-];
+].sort(); // Sort A–Z
 ---
 
 <html lang="en">
@@ -32,7 +32,7 @@ const allCategories = [
       header {
         background: #fff;
         border-bottom: 1px solid #ddd;
-        padding: 1rem;
+        padding: 1.2rem;
         display: flex;
         align-items: center;
         gap: 1rem;
@@ -40,13 +40,13 @@ const allCategories = [
       }
 
       .logo {
-        width: 50px;
-        height: 50px;
-        border-radius: 10px;
+        width: 80px;
+        height: 80px;
+        border-radius: 12px;
       }
 
       .site-title {
-        font-size: 1.8rem;
+        font-size: 2rem;
         font-weight: bold;
         color: #333;
       }
@@ -60,13 +60,25 @@ const allCategories = [
       }
 
       aside {
-        width: 200px;
+        width: 220px;
         flex-shrink: 0;
         background: #fff;
         padding: 1rem;
         border: 1px solid #ddd;
         border-radius: 8px;
         height: fit-content;
+      }
+
+      .search-bar {
+        margin-bottom: 1.2rem;
+      }
+
+      .search-bar input {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 1rem;
       }
 
       aside h3 {
@@ -154,6 +166,10 @@ const allCategories = [
 
     <div class="main-container">
       <aside>
+        <div class="search-bar">
+          <input type="text" id="searchInput" placeholder="Search deals..." />
+        </div>
+
         <h3>Categories</h3>
         <ul class="category-list">
           {allCategories.map((cat) => (
@@ -169,7 +185,7 @@ const allCategories = [
 
       <div class="grid" id="dealsGrid">
         {deals.map((deal) => (
-          <div class="card" data-category={deal.data.category}>
+          <div class="card" data-category={deal.data.category} data-title={deal.data.title.toLowerCase()}>
             <img src={deal.data.image} alt={deal.data.title} />
             <h2>{deal.data.title}</h2>
             <p><strong>£{deal.data.price}</strong></p>
@@ -183,19 +199,23 @@ const allCategories = [
     <script>
       const checkboxes = document.querySelectorAll(".category-filter");
       const cards = document.querySelectorAll(".card");
+      const searchInput = document.getElementById("searchInput");
 
-      checkboxes.forEach((box) =>
-        box.addEventListener("change", () => {
-          const active = [...checkboxes]
-            .filter((c) => c.checked)
-            .map((c) => c.value);
+      function filterCards() {
+        const activeCats = [...checkboxes].filter((c) => c.checked).map((c) => c.value);
+        const search = searchInput.value.toLowerCase();
 
-          cards.forEach((card) => {
-            const cat = card.dataset.category;
-            card.classList.toggle("hidden", active.length && !active.includes(cat));
-          });
-        })
-      );
+        cards.forEach((card) => {
+          const cat = card.dataset.category;
+          const title = card.dataset.title;
+          const matchesCat = activeCats.length === 0 || activeCats.includes(cat);
+          const matchesSearch = title.includes(search);
+          card.classList.toggle("hidden", !(matchesCat && matchesSearch));
+        });
+      }
+
+      checkboxes.forEach((box) => box.addEventListener("change", filterCards));
+      searchInput.addEventListener("input", filterCards);
     </script>
   </body>
 </html>
