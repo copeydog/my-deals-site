@@ -14,7 +14,7 @@ const allCategories = [
   "TV & Film",
   "Travel",
   "Video Gaming"
-].sort(); // Sort A–Z
+].sort();
 ---
 
 <html lang="en">
@@ -74,14 +74,14 @@ const allCategories = [
       }
 
       .search-bar input {
-  width: 100%;
-  max-width: 100%;
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 1rem;
-  box-sizing: border-box;
-}
+        width: 100%;
+        max-width: 100%;
+        padding: 0.5rem;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 1rem;
+        box-sizing: border-box;
+      }
 
       aside h3 {
         margin-top: 0;
@@ -160,6 +160,7 @@ const allCategories = [
       }
     </style>
   </head>
+
   <body>
     <header>
       <img src="/logo.png" alt="Wowza Deals" class="logo" />
@@ -187,7 +188,11 @@ const allCategories = [
 
       <div class="grid" id="dealsGrid">
         {deals.map((deal) => (
-          <div class="card" data-category={deal.data.category} data-title={deal.data.title.toLowerCase()}>
+          <div
+            class="card"
+            data-category={deal.data.category}
+            data-title={deal.data.title.toLowerCase()}
+          >
             <img src={deal.data.image} alt={deal.data.title} />
             <h2>{deal.data.title}</h2>
             <p><strong>£{deal.data.price}</strong></p>
