@@ -1,173 +1,96 @@
 ---
 import { getCollection } from 'astro:content';
+const allDeals = await getCollection('deals');
 
-const deals = await getCollection('deals');
-const allCategories = [
-  "Fashion",
-  "Food & Drink",
-  "Health & Beauty",
-  "Home & Garden",
-  "Kids",
-  "Music",
-  "Sport",
-  "Technology",
-  "TV & Film",
-  "Travel",
-  "Video Gaming"
-].sort();
+let allCategories = Array.from(
+  new Set(allDeals.map((d) => d.data.category))
+).sort();
 ---
 
-<html lang="en">
+<html>
   <head>
-    <meta charset="UTF-8" />
     <title>Wowza Deals</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
       body {
-        margin: 0;
         font-family: system-ui, sans-serif;
-        background: #f9f9f9;
+        margin: 0;
+        padding: 1rem;
+        background: #f5f5f5;
       }
-
       header {
-        background: #fff;
-        border-bottom: 1px solid #ddd;
-        padding: 1.2rem;
         display: flex;
         align-items: center;
-        gap: 1rem;
-        justify-content: center;
+        margin-bottom: 2rem;
       }
-
       .logo {
-        width: 80px;
-        height: 80px;
-        border-radius: 12px;
+        height: 60px;
+        margin-right: 1rem;
       }
-
-      .site-title {
-        font-size: 2rem;
-        font-weight: bold;
-        color: #333;
-      }
-
-      .main-container {
+      .grid {
         display: flex;
-        max-width: 1300px;
-        margin: 2rem auto;
-        padding: 0 1rem;
         gap: 2rem;
       }
-
       aside {
-        width: 220px;
-        flex-shrink: 0;
-        background: #fff;
+        width: 250px;
+        background: white;
         padding: 1rem;
-        border: 1px solid #ddd;
         border-radius: 8px;
-        height: fit-content;
       }
-
-      .search-bar {
-        margin-bottom: 1.2rem;
+      main {
+        flex: 1;
       }
-
-      .search-bar input {
-        width: 100%;
+      .card {
+        background: white;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      }
+      .card img {
         max-width: 100%;
-        padding: 0.5rem;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-        font-size: 1rem;
-        box-sizing: border-box;
+        height: auto;
+        margin-bottom: 0.5rem;
       }
-
-      aside h3 {
-        margin-top: 0;
+      .card-title {
+        font-weight: bold;
+        margin-bottom: 0.25rem;
       }
-
+      .price {
+        font-size: 1.1rem;
+        margin-bottom: 0.25rem;
+      }
+      .category {
+        color: #555;
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+      }
+      .buy-button {
+        background: #0070f3;
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+        text-decoration: none;
+        display: inline-block;
+      }
       .category-list {
         list-style: none;
         padding: 0;
-        margin: 0;
       }
-
       .category-list li {
-        margin: 0.3rem 0;
+        margin-bottom: 0.5rem;
       }
-
-      .clear-filters-button {
-        margin-top: 1rem;
+      .search-bar input {
         width: 100%;
-        padding: 0.4rem;
-        border-radius: 6px;
-        border: none;
-        background: #eee;
-        cursor: pointer;
-        font-size: 0.95rem;
-      }
-
-      .grid {
-        flex: 1;
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-        gap: 1.5rem;
-      }
-
-      .card {
-        background: white;
-        border-radius: 10px;
-        padding: 1rem;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        display: flex;
-        flex-direction: column;
-      }
-
-      .card img {
-        width: 100%;
-        height: auto;
-        border-radius: 8px;
-        object-fit: cover;
-        margin-bottom: 1rem;
-      }
-
-      .card h2 {
-        margin: 0 0 0.5rem;
-        font-size: 1.2rem;
-      }
-
-      .card p {
-        margin: 0.2rem 0;
-      }
-
-      .buy-button {
-        margin-top: auto;
+        max-width: 100%;
+        box-sizing: border-box;
         padding: 0.5rem;
-        background: #0070f3;
-        color: white;
-        text-align: center;
-        border-radius: 6px;
-        text-decoration: none;
-        font-weight: bold;
-      }
-
-      .buy-button:hover {
-        background: #005ac1;
-      }
-
-      .hidden {
-        display: none !important;
-      }
-
-      @media (max-width: 768px) {
-        .main-container {
-          flex-direction: column;
-        }
-
-        aside {
-          width: 100%;
-        }
+        margin-bottom: 1rem;
+        font-size: 1rem;
+        border-radius: 4px;
+        border: 1px solid #ccc;
       }
     </style>
   </head>
@@ -175,10 +98,10 @@ const allCategories = [
   <body>
     <header>
       <img src="/logo.png" alt="Wowza Deals" class="logo" />
-      <h1 class="site-title">Wowza Deals</h1>
+      <h1>Wowza Deals</h1>
     </header>
 
-    <div class="main-container">
+    <div class="grid">
       <aside>
         <div class="search-bar">
           <input type="text" id="searchInput" placeholder="Search deals..." />
@@ -196,49 +119,52 @@ const allCategories = [
           ))}
         </ul>
 
-        <button id="clearFilters" class="clear-filters-button">
+        <button id="clearFilters" style="margin-top: 1rem; width: 100%; padding: 0.4rem; border-radius: 6px; border: none; background: #eee; cursor: pointer;">
           Clear All Filters
         </button>
       </aside>
 
-      <div class="grid" id="dealsGrid">
-        {deals.map((deal) => (
-          <div
-            class="card"
-            data-category={deal.data.category}
-            data-title={deal.data.title.toLowerCase()}
-          >
+      <main id="dealsGrid">
+        {allDeals.map((deal) => (
+          <div class="card" data-title={deal.data.title} data-category={deal.data.category.toLowerCase()}>
             <img src={deal.data.image} alt={deal.data.title} />
-            <h2>{deal.data.title}</h2>
-            <p><strong>£{deal.data.price}</strong></p>
-            <p>{deal.data.category}</p>
-            <a class="buy-button" href={deal.data.affiliateLink} target="_blank">
-              Buy Now
-            </a>
+            <div class="card-title">{deal.data.title}</div>
+            <p class="price">
+              {deal.data.originalPrice && (
+                <span style="color: grey; text-decoration: line-through; margin-right: 8px;">
+                  £{deal.data.originalPrice.toFixed(2)}
+                </span>
+              )}
+              <strong>£{deal.data.price.toFixed(2)}</strong>
+            </p>
+            <div class="category">{deal.data.category}</div>
+            <a href={deal.data.affiliateLink} target="_blank" class="buy-button">Buy Now</a>
           </div>
         ))}
-      </div>
+      </main>
     </div>
 
-    <script>
+    <script type="module">
       const checkboxes = document.querySelectorAll(".category-filter");
-      const cards = document.querySelectorAll(".card");
       const searchInput = document.getElementById("searchInput");
+      const deals = document.querySelectorAll(".card");
 
       function filterCards() {
-        const activeCats = [...checkboxes].filter((c) => c.checked).map((c) => c.value);
-        const search = searchInput.value.toLowerCase();
+        const activeCats = Array.from(checkboxes)
+          .filter((c) => c.checked)
+          .map((c) => c.value.toLowerCase());
+        const searchTerm = searchInput.value.toLowerCase();
 
-        cards.forEach((card) => {
-          const cat = card.dataset.category;
-          const title = card.dataset.title;
-          const matchesCat = activeCats.length === 0 || activeCats.includes(cat);
-          const matchesSearch = title.includes(search);
-          card.classList.toggle("hidden", !(matchesCat && matchesSearch));
+        deals.forEach((card) => {
+          const title = card.dataset.title.toLowerCase();
+          const category = card.dataset.category;
+          const matchesSearch = title.includes(searchTerm);
+          const matchesCat = activeCats.length === 0 || activeCats.includes(category);
+          card.style.display = matchesSearch && matchesCat ? "block" : "none";
         });
       }
 
-      checkboxes.forEach((box) => box.addEventListener("change", filterCards));
+      checkboxes.forEach((c) => c.addEventListener("change", filterCards));
       searchInput.addEventListener("input", filterCards);
 
       document.getElementById("clearFilters").addEventListener("click", () => {
